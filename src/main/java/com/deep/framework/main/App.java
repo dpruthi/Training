@@ -1,6 +1,11 @@
 package com.deep.framework.main;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -13,24 +18,46 @@ public class App {
 	WebDriver driver;
 
 	@Test(priority = 0)
-	public void loadUrl() throws InterruptedException {
+	public void loadUrl() {
 
 		System.setProperty("webdriver.chrome.driver",
 				"\\C:\\Users\\deepak.pruthi\\eclipse-workspace\\autoGithub\\src\\ChromeDriver\\chromedriver.exe\\");
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
-		driver.get("https://www.youtube.com");
-		
 
-		String baseUrl = "https://www.youtube.com";
-		String videoLink = "https://youtu.be/5FUdrBq-WFo";
+		String baseUrl = "https://www.gmail.com";
 
 		driver.get(baseUrl);
-		driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "t");
 
-		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
-		driver.switchTo().window(tabs.get(1)); // switches to new tab
+	}
+
+	@Test(priority = 1)
+	public void newTAb() throws AWTException {
+
+		Robot robot = new Robot();
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_T);
+		// CTRL+Z is now pressed (receiving application should see a "key down" event.)
+		robot.keyRelease(KeyEvent.VK_T);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+
+		//get window handlers as list
+		List<String> browserTabs = new ArrayList<String> (driver.getWindowHandles());
+		//switch to new tab
+		driver.switchTo().window(browserTabs .get(1));
+	}
+
+	@Test(priority = 2)
+	public void loadVideo() throws AWTException {
+		String videoLink = "https://youtu.be/5FUdrBq-WFo";
+
 		driver.get(videoLink);
+
+		Robot rb = new Robot();
+		rb.keyPress(KeyEvent.VK_K);
+
+		String time = driver.findElement(By.xpath("//span[@class='ytp-time-duration']")).getText();
+		System.out.println(time);
 
 	}
 
